@@ -33,8 +33,23 @@ if (inputElem) {
   inputElem.addEventListener('input', updateCounts);
 }
 
+const apiKeyInput = document.getElementById('api-key-input');
+if (apiKeyInput) {
+  apiKeyInput.addEventListener('input', () => {
+    const statusEl = document.getElementById('api-key-status');
+    if (apiKeyInput.value.trim()) {
+      statusEl.innerText = 'ACTIVE';
+      statusEl.className = 'api-key-status active';
+    } else {
+      statusEl.innerText = 'NOT SET';
+      statusEl.className = 'api-key-status';
+    }
+  });
+}
+
 async function executeAudit() {
   const text = document.getElementById('news-input').value.trim();
+  const apiKey = (document.getElementById('api-key-input') || {}).value || '';
   const loading = document.getElementById('audit-loading');
   const resultsArea = document.getElementById('audit-results');
   const runBtn = document.getElementById('run-audit-btn');
@@ -46,13 +61,16 @@ async function executeAudit() {
 
   loading.classList.add('active');
   runBtn.disabled = true;
-  runBtn.innerText = "[ ANALYZING... ]";
+  runBtn.innerText = apiKey.trim() ? "[ ANALYZING + AI FACT-CHECK... ]" : "[ ANALYZING... ]";
 
   try {
+    const payload = { text };
+    if (apiKey.trim()) payload.api_key = apiKey.trim();
+
     const res = await fetch('/api/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text })
+      body: JSON.stringify(payload)
     });
 
     if (!res.ok) {
@@ -161,6 +179,34 @@ function renderAuditResults(d) {
       `;
       claimsContainer.appendChild(item);
     });
+  }
+
+  const aiCard = document.getElementById('ai-factcheck-card');
+  const aiResultBox = document.getElementById('ai-factcheck-result');
+  const aiSource = document.getElementById('ai-source');
+  const aiStatus = document.getElementById('ai-status');
+  const aiCompSection = document.getElementById('ai-comparison-section');
+  const aiCompResult = document.getElementById('ai-comparison-result');
+
+  if (d.ai_factcheck && d.ai_factcheck.enabled) {
+    aiSource.innerText = d.ai_factcheck.source.toUpperCase();
+    aiStatus.innerText = 'COMPLETE';
+    aiResultBox.innerText = d.ai_factcheck.result || 'No result returned.';
+    aiResultBox.style.whiteSpace = 'pre-wrap';
+
+    if (d.ai_factcheck.comparison) {
+      aiCompSection.style.display = 'block';
+      aiCompResult.innerText = d.ai_factcheck.comparison;
+      aiCompResult.style.whiteSpace = 'pre-wrap';
+    } else {
+      aiCompSection.style.display = 'none';
+    }
+  } else {
+    aiSource.innerText = 'DISABLED';
+    aiStatus.innerText = 'NO KEY';
+    aiResultBox.innerText = 'ENTER A GEMINI API KEY IN THE INPUT CONSOLE TO ENABLE AI-POWERED FACT CHECKING.';
+    aiResultBox.style.whiteSpace = 'normal';
+    aiCompSection.style.display = 'none';
   }
 }
 

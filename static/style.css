@@ -526,6 +526,54 @@ body {
   color: var(--white);
 }
 
+.brutalist-input {
+  flex: 1;
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  border: var(--border-thick);
+  background-color: var(--white);
+  box-shadow: inset 2px 2px 0px rgba(0,0,0,0.06);
+  color: var(--black);
+  outline: none;
+}
+
+.brutalist-input:focus {
+  background-color: #fffef0;
+  border-color: var(--blue);
+}
+
+.api-key-status {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 900;
+  padding: 4px 10px;
+  border: var(--border-medium);
+  text-transform: uppercase;
+  background-color: var(--gray-light);
+  color: #888;
+  white-space: nowrap;
+}
+
+.api-key-status.active {
+  background-color: var(--green);
+  color: var(--white);
+}
+
+.ai-result-box {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.6;
+  padding: 14px;
+  background-color: var(--gray-light);
+  border: var(--border-medium);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
 .brutalist-footer {
   border-top: var(--border-thick);
   background-color: var(--white);

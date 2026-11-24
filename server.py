@@ -174,8 +174,24 @@ def analyze_article():
             "score": composite_score,
             "verdict": overall_verdict,
             "description": overall_desc
+        },
+        "ai_factcheck": {
+            "enabled": False,
+            "source": "none",
+            "result": None,
+            "comparison": None
         }
     }
+
+    if api_key:
+        ai_result, ai_error = check_with_gemini(user_text, api_key)
+        compare_result, compare_error = compare_with_current_news(user_text, api_key)
+        result_payload["ai_factcheck"] = {
+            "enabled": True,
+            "source": "gemini" if not ai_error else "fallback",
+            "result": ai_result or ai_error,
+            "comparison": compare_result or compare_error
+        }
 
     history = load_history()
     snippet = user_text[:120] + ("..." if len(user_text) > 120 else "")

@@ -29,6 +29,14 @@
         <span class="card-title">[INPUT CONSOLE]</span>
       </div>
 
+      <div style="margin-bottom: 18px;">
+        <label class="input-label" for="api-key-input">GEMINI API KEY (FOR AI FACT-CHECK):</label>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <input id="api-key-input" type="password" class="brutalist-input" placeholder="Paste your Gemini API key here..." value="">
+          <span id="api-key-status" class="api-key-status">NOT SET</span>
+        </div>
+      </div>
+
       <label class="input-label" for="news-input">ENTER NEWS TEXT OR ARTICLE CONTENT:</label>
       <textarea id="news-input" class="brutalist-textarea" placeholder="Paste full article text, breaking wire headline, or news statement here..."></textarea>
 
@@ -220,6 +228,33 @@
           </div>
 
           <div id="csp-claims-list" class="claims-list"></div>
+        </div>
+
+        <div class="bento-card full-width" id="ai-factcheck-card">
+          <div class="bento-head">
+            <span class="bento-title">[06_AI_FACT_CHECK]</span>
+            <span class="bento-num">GEMINI LLM</span>
+          </div>
+
+          <div class="stat-box-row">
+            <div class="stat-cell">
+              <div id="ai-source" class="stat-cell-num">--</div>
+              <div class="stat-cell-label">SOURCE</div>
+            </div>
+            <div class="stat-cell">
+              <div id="ai-status" class="stat-cell-num">--</div>
+              <div class="stat-cell-label">STATUS</div>
+            </div>
+          </div>
+
+          <div id="ai-factcheck-result" class="ai-result-box">
+            ENTER A GEMINI API KEY IN THE INPUT CONSOLE TO ENABLE AI-POWERED FACT CHECKING.
+          </div>
+
+          <div id="ai-comparison-section" style="display:none; margin-top: 14px;">
+            <div style="font-weight:900; font-size:12px; text-transform:uppercase; margin-bottom:8px; padding:6px; background:var(--yellow); border:var(--border-medium);">CURRENT EVENTS CROSS-REFERENCE</div>
+            <div id="ai-comparison-result" class="ai-result-box">--</div>
+          </div>
         </div>
 
       </div>
