@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI FAKE NEWS DETECTOR</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <main class="container">
+
+    <div style="margin-top: 10px;">
+      <div class="sticker-warning">WARNING: UNPOLISHED CONTENT</div>
+    </div>
+
+    <section class="hero-box">
+      <h1>
+        AI <mark class="highlight-yellow">FAKE NEWS</mark><br>
+        <span class="highlight-blue">DETECTOR.</span>
+      </h1>
+    </section>
+
+    <section class="brutalist-card">
+      <div class="card-header">
+        <span class="card-title">[INPUT CONSOLE]</span>
+      </div>
+
+      <label class="input-label" for="news-input">ENTER NEWS TEXT OR ARTICLE CONTENT:</label>
+      <textarea id="news-input" class="brutalist-textarea" placeholder="Paste full article text, breaking wire headline, or news statement here..."></textarea>
+
+      <div class="meta-row">
+        <span id="char-word-count">CHARS: 0 | WORDS: 0</span>
+        <span>FORMAT: RAW TEXT</span>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <span style="font-weight: 900; font-size: 11px; margin-right: 8px;">[PRESETS]:</span>
+        <button type="button" class="sample-btn" onclick="loadSample('clickbait')">SENSATIONAL CLICKBAIT</button>
+        <button type="button" class="sample-btn" onclick="loadSample('reuters')">VERIFIED REUTERS NEWS</button>
+        <button type="button" class="sample-btn" onclick="loadSample('contradiction')">CONTRADICTORY CLAIMS</button>
+        <button type="button" class="sample-btn" onclick="clearInput()">[CLEAR]</button>
+      </div>
+
+      <div>
+        <button id="run-audit-btn" type="button" class="brutalist-btn" onclick="executeAudit()">
+          [ ANALYZE CONTENT ]
+        </button>
+      </div>
+    </section>
+
+    <div id="audit-loading" class="loading-box">
+      [ PROCESSING CONTENT THROUGH ML MODEL &amp; GRAPH ANALYSIS... ]
+    </div>
+
+    <section id="audit-results" style="display: none;">
+      
+      <div id="verdict-banner" class="verdict-stamp">
+        <div>
+          <div id="verdict-status" class="verdict-badge">VERDICT: ANALYZING</div>
+          <div id="verdict-desc" style="font-weight: 700; margin-top: 8px; font-size: 14px; text-transform: uppercase;"></div>
+        </div>
+        <div class="verdict-score-box">
+          <div id="verdict-score" class="verdict-score-num">--</div>
+          <div class="verdict-score-label">TRUTH CONFIDENCE INDEX / 100</div>
+        </div>
+      </div>
+
+      <div class="telemetry-grid">
+        
+        <div class="bento-card">
+          <div class="bento-head">
+            <span class="bento-title">[01_TEXT_TYPE]</span>
+            <span class="bento-num">SENSOR</span>
+          </div>
+          <div class="stat-box-row">
+            <div class="stat-cell">
+              <div id="sensor-type" class="stat-cell-num">--</div>
+              <div class="stat-cell-label">TEXT TYPE</div>
+            </div>
+            <div class="stat-cell">
+              <div id="sensor-is-news" class="stat-cell-num">--</div>
+              <div class="stat-cell-label">IS NEWS?</div>
+            </div>
+          </div>
+          <div id="sensor-reason" style="font-size: 12px; font-weight: 700; padding: 10px; background: var(--gray-light); border: var(--border-medium);"></div>
+        </div>
+
+        <div class="bento-card">
+          <div class="bento-head">
+            <span class="bento-title">[02_ML_PREDICTION]</span>
+            <span id="ml-model-name" class="bento-num">RANDOM FOREST</span>
+          </div>
+          
+          <div class="meter-row">
+            <div class="meter-label-row">
+              <span>AUTHENTIC (REAL) PROBABILITY</span>
+              <span id="ml-real-pct">0%</span>
+            </div>
+            <div class="brutalist-meter-bg">
+              <div id="ml-real-bar" class="brutalist-meter-fill green" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="meter-row">
+            <div class="meter-label-row">
+              <span>FABRICATED (FAKE) PROBABILITY</span>
+              <span id="ml-fake-pct">0%</span>
+            </div>
+            <div class="brutalist-meter-bg">
+              <div id="ml-fake-bar" class="brutalist-meter-fill red" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bento-card">
+          <div class="bento-head">
+            <span class="bento-title">[03_CREDIBILITY_SCORES]</span>
+            <span class="bento-num">HEURISTICS</span>
+          </div>
+
+          <div class="meter-row">
+            <div class="meter-label-row">
+              <span>CLICKBAIT RESISTANCE</span>
+              <span id="cred-clickbait">--</span>
+            </div>
+            <div class="brutalist-meter-bg">
+              <div id="cred-clickbait-bar" class="brutalist-meter-fill blue" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="meter-row">
+            <div class="meter-label-row">
+              <span>SOURCE QUALITY</span>
+              <span id="cred-source">--</span>
+            </div>
+            <div class="brutalist-meter-bg">
+              <div id="cred-source-bar" class="brutalist-meter-fill blue" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="meter-row">
+            <div class="meter-label-row">
+              <span>OBJECTIVE TONE</span>
+              <span id="cred-tone">--</span>
+            </div>
+            <div class="brutalist-meter-bg">
+              <div id="cred-tone-bar" class="brutalist-meter-fill blue" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="meter-row">
+            <div class="meter-label-row">
+              <span>ARTICLE STRUCTURE</span>
+              <span id="cred-struct">--</span>
+            </div>
+            <div class="brutalist-meter-bg">
+              <div id="cred-struct-bar" class="brutalist-meter-fill blue" style="width: 0%;"></div>
+            </div>
+          </div>
+          
+          <div id="cred-verdict" style="font-size: 11px; font-weight: 900; text-transform: uppercase; margin-top: 6px; padding: 6px; border: var(--border-medium); background: var(--yellow);"></div>
+        </div>
+
+        <div class="bento-card full-width">
+          <div class="bento-head">
+            <span class="bento-title">[04_KEYWORD_TOPOLOGY_GRAPH]</span>
+            <span class="bento-num">BFS &amp; DFS</span>
+          </div>
+
+          <div class="stat-box-row">
+            <div class="stat-cell">
+              <div id="graph-keywords-count" class="stat-cell-num">0</div>
+              <div class="stat-cell-label">KEYWORDS</div>
+            </div>
+            <div class="stat-cell">
+              <div id="graph-edges-count" class="stat-cell-num">0</div>
+              <div class="stat-cell-label">CONNECTIONS</div>
+            </div>
+            <div class="stat-cell">
+              <div id="graph-components-count" class="stat-cell-num">0</div>
+              <div class="stat-cell-label">COMPONENTS</div>
+            </div>
+            <div class="stat-cell">
+              <div id="graph-score-count" class="stat-cell-num">0</div>
+              <div class="stat-cell-label">STRUCTURE SCORE</div>
+            </div>
+          </div>
+
+          <div class="graph-canvas-container">
+            <svg id="graph-svg"></svg>
+          </div>
+
+          <div class="traversal-chain">
+            <strong>BFS PATH:</strong> <span id="graph-bfs-chain">NONE</span>
+          </div>
+          <div class="traversal-chain">
+            <strong>DFS PATH:</strong> <span id="graph-dfs-chain">NONE</span>
+          </div>
+        </div>
+
+        <div class="bento-card full-width">
+          <div class="bento-head">
+            <span class="bento-title">[05_CLAIM_CONTRADICTIONS]</span>
+            <span class="bento-num">CSP</span>
+          </div>
+          
+          <div class="stat-box-row">
+            <div class="stat-cell">
+              <div id="csp-claims-count" class="stat-cell-num">0</div>
+              <div class="stat-cell-label">CLAIMS FOUND</div>
+            </div>
+            <div class="stat-cell">
+              <div id="csp-consistency-score" class="stat-cell-num">--</div>
+              <div class="stat-cell-label">CONSISTENCY SCORE</div>
+            </div>
+          </div>
+
+          <div id="csp-claims-list" class="claims-list"></div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="brutalist-card" style="margin-top: 28px;">
+      <div class="card-header">
+        <span class="card-title">[ANALYSIS HISTORY]</span>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span class="card-badge">TOTAL: <span id="history-count">0</span></span>
+          <button type="button" class="sample-btn" onclick="clearHistory()" style="margin:0;">CLEAR ALL</button>
+        </div>
+      </div>
+      <div id="history-list" class="history-container">
+        <div style="font-weight:700; color:#666; padding:16px; text-align:center;">LOADING HISTORY...</div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

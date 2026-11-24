@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+data/*.csv
+dataset/*.csv
+model/*.pkl
+analysis_history.json
+.env
+*.egg-info/
+dist/
+build/
+.vscode/
+.idea/

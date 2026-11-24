@@ -1,0 +1,1 @@
+{"Logistic Regression": {"accuracy": 98.83, "confusion_matrix": [[3520, 60], [31, 4154]]}, "Naive Bayes": {"accuracy": 95.4, "confusion_matrix": [[3423, 157], [200, 3985]]}, "Random Forest": {"accuracy": 99.03, "confusion_matrix": [[3525, 55], [20, 4165]]}, "best_model": "Random Forest"}
